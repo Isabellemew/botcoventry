@@ -3,7 +3,13 @@ import os
 
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler
 
-from handlers.start import start_command, show_teachers_callback, teacher_info_callback
+from handlers.start import (
+    start_command,
+    show_teachers_callback,
+    teacher_info_callback,
+    show_events_callback,
+    back_to_main_callback,
+)
 
 # Enable logging
 logging.basicConfig(
@@ -21,6 +27,8 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start_command))
     application.add_handler(CallbackQueryHandler(show_teachers_callback, pattern="^show_teachers$"))
     application.add_handler(CallbackQueryHandler(teacher_info_callback, pattern="^teacher_\\d+$"))
+    application.add_handler(CallbackQueryHandler(show_events_callback, pattern="^show_events$"))
+    application.add_handler(CallbackQueryHandler(back_to_main_callback, pattern="^back_to_main$"))
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling()
