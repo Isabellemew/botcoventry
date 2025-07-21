@@ -4,7 +4,8 @@ from teachers_info import teachers
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("Информация о преподавателях", callback_data="show_teachers")]
+        [InlineKeyboardButton("Информация о преподавателях", callback_data="show_teachers")],
+        [InlineKeyboardButton("Event Announcements", callback_data="show_events")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
@@ -32,3 +33,11 @@ async def teacher_info_callback(update: Update, context: ContextTypes.DEFAULT_TY
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.answer()
     await query.edit_message_text(info, reply_markup=reply_markup)
+
+async def show_events_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [[InlineKeyboardButton("⬅️ Back", callback_data="back_to_main")]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.callback_query.answer()
+    await update.callback_query.edit_message_text(
+        "No upcoming events announced yet.", reply_markup=reply_markup
+    )
