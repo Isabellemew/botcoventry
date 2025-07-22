@@ -83,7 +83,7 @@ def answer_faq(message):
         if any(keyword in user_text for keyword in item['keywords']):
             bot.send_message(message.chat.id, item['answer'])
             return 
-    bot.send_message(message.chat.id, "Sorry, I can't answer this question yet. Contact the admin.")
+    bot.send_message(message.chat.id, "Sorry, I can't answer this question yet. Contact the admin +7xxxxx.")
 
 # Run the bot
 bot.polling(none_stop=True)
