@@ -1,0 +1,7 @@
+TOKEN = "8014658275:AAGrOuAlv3OV4TGBC1PYZgRNQyDLFyBfTCM"
+
+DB_HOST = "localhost"
+DB_NAME = "coventry_bot"
+DB_USER = "postgres"
+DB_PASSWORD = "123"
+DB_PORT = "5432"
