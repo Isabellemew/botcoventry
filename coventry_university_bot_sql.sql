@@ -1,5 +1,9 @@
 DROP TABLE IF EXISTS bookings, rooms, clubs;
 
+<<<<<<< HEAD
+=======
+-- Таблица клубов
+>>>>>>> coventry-database
 CREATE TABLE clubs (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
@@ -7,6 +11,10 @@ CREATE TABLE clubs (
     description TEXT
 );
 
+<<<<<<< HEAD
+=======
+-- Таблица аудиторий
+>>>>>>> coventry-database
 CREATE TABLE rooms (
     id SERIAL PRIMARY KEY,
     room_number VARCHAR(10) NOT NULL,
@@ -17,6 +25,10 @@ CREATE TABLE rooms (
     available BOOLEAN DEFAULT TRUE
 );
 
+<<<<<<< HEAD
+=======
+-- Таблица бронирований
+>>>>>>> coventry-database
 CREATE TABLE bookings (
     id SERIAL PRIMARY KEY,
     user_id INTEGER,
@@ -25,11 +37,19 @@ CREATE TABLE bookings (
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     purpose TEXT,
+<<<<<<< HEAD
     booked_by VARCHAR(100) 
+=======
+    booked_by VARCHAR(100) -- добавлено
+>>>>>>> coventry-database
 );
 
 SELECT * FROM bookings;
 
+<<<<<<< HEAD
+=======
+-- Клубы
+>>>>>>> coventry-database
 INSERT INTO clubs (name, category, description) VALUES
 ('Media', 'Creative / Media', 'Photo, video, and content editing'),
 ('Advertisement', 'Marketing', 'Promotion and advertising activities'),
@@ -46,6 +66,10 @@ INSERT INTO clubs (name, category, description) VALUES
 ('Football', 'Sports', 'University football (soccer) team'),
 ('Table Tennis', 'Sports', 'Table tennis club and training');
 
+<<<<<<< HEAD
+=======
+-- Аудитории
+>>>>>>> coventry-database
 INSERT INTO rooms (room_number, floor, name, capacity, room_type, available) VALUES
 -- 1st Floor
 ('103', 1, 'Medical Services', 10, 'Office', TRUE),
@@ -90,5 +114,9 @@ INSERT INTO rooms (room_number, floor, name, capacity, room_type, available) VAL
 SELECT * FROM rooms;
 
 
+<<<<<<< HEAD
+=======
+-- Пример бронирования
+>>>>>>> coventry-database
 INSERT INTO bookings (room_id, booked_by, date, start_time, end_time, purpose)
 VALUES (3, 'Tech Club', '2025-07-23', '15:00', '17:00', 'Weekly Tech Club Meeting');
