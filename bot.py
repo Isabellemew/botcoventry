@@ -69,6 +69,62 @@ def book_room(club_name, room_number, date, start_time, end_time, booked_by):
         print(f"[DB ERROR - Booking] {e}")
         return f"❌ Error: {e}"
 
+# FAQ DATA
+FAQ = [
+    {
+        'keywords': ['documents', 'apply', 'application', 'required documents'],
+        'answer': 'You will need: passport, photo, diploma with transcript, IELTS certificate, and UNT results.'
+    },
+    {
+        'keywords': ['english', 'language', 'ielts', 'requirement'],
+        'answer': 'For Foundation: IELTS 5.0–5.5. For Master\'s: IELTS 6.5 or higher.'
+    },
+    {
+        'keywords': ['programs', 'majors', 'foundation', 'bachelor'],
+        'answer': 'Foundation: Business, Computer Science, Economics & Finance, International Relations.\nBachelor: Marketing, Management, International Business, Computer Science, Artificial Intelligence.'
+    },
+    {
+        'keywords': ['scholarship', 'gpa', 'essay', 'olympiad'],
+        'answer': 'GPA ≥ 4.0, IELTS ≥ 6.0. Two stages: achievement review + essay/olympiad. UNT ≥ 50 by June.'
+    },
+    {
+        'keywords': ['tuition', 'cost', 'price', 'fee'],
+        'answer': 'Tuition fee: 10,000,000 KZT per year.'
+    },
+    {
+        'keywords': ['dorm', 'accommodation', 'housing', 'campus'],
+        'answer': 'Yes, a student dormitory is available on the Astana campus.'
+    },
+    {
+        'keywords': ['mobility', 'exchange', 'study abroad'],
+        'answer': 'Yes, academic mobility programs are available with Coventry University UK.'
+    },
+    {
+        'keywords': ['apply', 'how to apply', 'submit', 'application process'],
+        'answer': 'Apply online: choose your program, upload documents, and pay the registration fee.'
+    },
+    {
+        'keywords': ['contact', 'email', 'phone', 'website'],
+        'answer': 'Email: admissions@coventry.edu.kz\nPhone: +7xxxxxxxxx\nWebsite: https://coventry.edu.kz'
+    },
+]
+
+def create_faq_keyboard():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    buttons = [
+        "What documents do I need?",
+        "English language requirements?",
+        "Available programs?",
+        "How to get a scholarship?",
+        "Tuition cost?",
+        "Is there a dormitory?",
+        "Is academic mobility available?",
+        "How to apply?",
+        "Contact info"
+    ]
+    keyboard.add(*[types.KeyboardButton(text) for text in buttons])
+    return keyboard
+
 # Временное хранилище
 user_data = {}
 
@@ -81,7 +137,8 @@ def welcome(message):
         types.KeyboardButton("📚 Clubs"),
         types.KeyboardButton("🏫 Rooms"),
         types.KeyboardButton("📝 Book"),
-        types.KeyboardButton("📆 My Bookings")
+        types.KeyboardButton("📆 My Bookings"),
+        types.KeyboardButton("❓ FAQ")
     )
 
     text = (
@@ -302,8 +359,41 @@ def my_bookings(message):
 
     bot.send_message(message.chat.id, text, parse_mode="HTML")
 
+# FAQ keyboard and handler
+@bot.message_handler(func=lambda message: message.text == "❓ FAQ")
+def handle_faq_button(message):
+    bot.send_message(
+        message.chat.id,
+        "Choose a question or type your own:",
+        reply_markup=create_faq_keyboard()
+    )
+
+@bot.message_handler(content_types=['text'])
+def answer_faq(message):
+    user_text = message.text.lower()
+    for item in FAQ:
+        if any(keyword in user_text for keyword in item['keywords']):
+            bot.send_message(message.chat.id, item['answer'])
+            return
+    # fallback to booking/rooms/clubs/mybookings if button pressed
+    if message.text in ["📚 Clubs", "🏫 Rooms", "📝 Book", "📆 My Bookings"]:
+        # already handled by other handlers
+        return
+    bot.send_message(message.chat.id, "Sorry, I can't answer this question yet. Contact the admin +7xxxxx.")
 
 # Запуск
 if __name__ == '__main__':
     print("🤖 Bot is running...")
     bot.polling()
+# Handle text messages
+@bot.message_handler(content_types=['text'])
+def answer_faq(message):
+    user_text = message.text.lower()
+    for item in FAQ:
+        if any(keyword in user_text for keyword in item['keywords']):
+            bot.send_message(message.chat.id, item['answer'])
+            return 
+    bot.send_message(message.chat.id, "Sorry, I can't answer this question yet. Contact the admin +7xxxxx.")
+
+# Run the bot
+bot.polling(none_stop=True)
