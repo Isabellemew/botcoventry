@@ -1,5 +1,7 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, CallbackQueryHandler
+import sqlite3
+from telegram.ext import CallbackContext
 from teachers_info import teachers
 import json
 from datetime import datetime, timedelta
@@ -20,16 +22,26 @@ def get_actual_events():
     actual = [e for e in events if datetime.fromisoformat(e['date']) >= two_weeks_ago]
     return actual
 
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
-        [InlineKeyboardButton("Teachers Information", callback_data="show_teachers")],
-        [InlineKeyboardButton("Event Announcements", callback_data="show_events")]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(
-        "Hello! I am CoventryBot 💬",
-        reply_markup=reply_markup
-    )
+async def start_command(update: Update, context: CallbackContext):
+    user_id = update.message.from_user.id
+    conn = sqlite3.connect('applicants.db')
+    c = conn.cursor()
+    c.execute("SELECT name FROM applicants WHERE user_id = ?", (user_id,))
+    result = c.fetchone()
+    conn.close()
+    if result:
+        # Пользователь уже зарегистрирован, показываем главное меню
+        keyboard = [
+            [InlineKeyboardButton("Teachers", callback_data='show_teachers')],
+            [InlineKeyboardButton("Events", callback_data='show_events')],
+            [InlineKeyboardButton("Register", callback_data='register')],
+            [InlineKeyboardButton("See my rank", callback_data='see_rank')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text('Welcome back! Choose an option:', reply_markup=reply_markup)
+    else:
+        context.user_data['state'] = 'enter_name'
+        await update.message.reply_text("Please enter your name in English:")
 
 async def show_teachers_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = []
@@ -68,7 +80,9 @@ async def show_events_callback(update: Update, context: ContextTypes.DEFAULT_TYP
 async def back_to_main_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("Teachers Information", callback_data="show_teachers")],
-        [InlineKeyboardButton("Event Announcements", callback_data="show_events")]
+        [InlineKeyboardButton("Event Announcements", callback_data="show_events")],
+        [InlineKeyboardButton("Register", callback_data='register')],
+        [InlineKeyboardButton("See my rank", callback_data='see_rank')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.callback_query.answer()
